@@ -1,3 +1,4 @@
+
 ymaps.ready(function () {
     var myMap = new ymaps.Map('map', {
             center: [53.409237, 58.983482],
@@ -22,4 +23,6 @@ ymaps.ready(function () {
         });
 
     myMap.geoObjects.add(myPlacemark);
+
+
 });
