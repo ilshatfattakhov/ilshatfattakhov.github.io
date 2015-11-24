@@ -32,7 +32,7 @@ if __name__ == "__main__":
     #Reading arguments
     api_url = 'https://geocode-maps.yandex.ru/1.x/?format=json&geocode='
 
-    json_file_path = '/home/ilshat/work/LPC/ilshatfattakhov.github.io/data/deliveries.json'
+    json_file_path = '/home/ilshat/work/LPC/ilshatfattakhov.github.io/data/deliveries_spb.json'
     fp = open(json_file_path, 'r')
     #print fp.read()
     json_value = fp.read()
@@ -40,11 +40,11 @@ if __name__ == "__main__":
     address_list = []
 
     for a in raw_data:
-        address_list.append('Magnitogorsk, '+a['street']+", "+a['house']+"/"+a.get('corps','')+", "+a.get('apartment',''))
+        address_list.append('Saint Petersburg, '+a.get('street','')+", "+a.get('house','')+"/"+a.get('corps','')+", "+a.get('apartment',''))
         
 
     #print get_geodata(url = api_url, addr_str = str("Magnitogorsk, Lenina, 58"))    
-    fdata = open('static/data.js','w')
+    fdata = open('static/data_spb.js','w')
     fdata.write('var data = [')
     
     data = []
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     #print data 
     for k in range(0,len(data)):
-        print data[k]
+        print address_list[k], data[k] 
         if data[k]<>None:
             fdata.write(str(data[k]))
             fdata.write(',')
