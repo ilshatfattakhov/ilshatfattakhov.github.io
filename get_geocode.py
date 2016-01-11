@@ -39,7 +39,7 @@ if __name__ == "__main__":
     #Reading arguments
     api_url = 'https://geocode-maps.yandex.ru/1.x/?format=json&geocode='
 
-    json_file_path = './data/deliveries_mgn.json'
+    json_file_path = './data/deliveries_spb.json'
     fp = open(json_file_path, 'r')
     #print fp.read()
     json_value = fp.read()
@@ -47,11 +47,11 @@ if __name__ == "__main__":
     address_list = []
 
     for a in raw_data:
-        address_list.append('Magnitogorsk, '+a.get('street','')+", "+a.get('house','')+"/"+a.get('corps','')+", "+a.get('apartment',''))
+        address_list.append('Saint Petersburg, '+a.get('street','')+", "+a.get('house','')+"/"+a.get('corps','')+", "+a.get('apartment',''))
         
 
     #print get_geodata(url = api_url, addr_str = str("Saint Petersburg, Альпийский пер, 15-1/, 173 "))    
-    fdata = open('static/data_mgn.js','w')
+    fdata = open('static/data_spb.js','w')
     fdata.write('var data = [')
     
     data = []
