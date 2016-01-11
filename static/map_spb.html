@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -141,13 +140,14 @@
                     }
                 }
             });
+        document.getElementById('cnt').innerHTML=data.length;
         });
     </script>
 </head>
 <body>
     <div class="hero-unit">
         <div class="container">
-            <p>Yandex Maps API <a href="https://github.com/yandex/mapsapi-heatmap">Heatmap Module</a></p>
+            <p>Like Pizza Cut <a href="http://spb.likepizzacut.com" target="blank">Санкт-Петербург</a> <br>Показано <span id="cnt"></span> доставок</p>
             <div id="YMapsID"></div>
         </div>
     </div>
