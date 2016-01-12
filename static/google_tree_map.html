@@ -1,0 +1,107 @@
+<html>
+  <head>
+   <title>Popular pizzas tree map</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <link href="https://yandex.st/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        html, body, .hero-unit {
+            min-height: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+        #GMapsID {
+            width: 900px;
+            height: 500px;
+        }
+        #GMapsCode {
+            width: 880px;
+        }
+    </style>
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["treemap"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+        ['Наименование', 'Parent', 'Количество проданных'],
+        ['Всего', null, 4507],
+        ['Огромная пицца', 'Всего', 285],
+        ['Большая пицца', 'Всего', 879],
+        ['Половина пиццы', 'Всего', 972],
+        ['Четверть пиццы', 'Всего', 623],
+        ['Кусок пиццы', 'Всего', 1748],
+        ['4 СЫРА огромная', 'Огромная пицца',7],
+        ['LIKE огромная','Огромная пицца',15],
+        ['TONNO огромная','Огромная пицца',6],
+        ['Маргарита огромная','Огромная пицца',21],
+        ['ОЛИВЬЕ огромная','Огромная пицца',38],
+        ['ОТ ШЕФА огромная','Огромная пицца',104],
+        ['Пепперони огромная','Огромная пицца',45],
+        ['Хорватский Омлет огромная','Огромная пицца',49],
+        ['4 СЫРА большая', 'Большая пицца',39],
+        ['LIKE большая', 'Большая пицца',59],
+        ['TONNO большая', 'Большая пицца',14],
+        ['Маргарита большая', 'Большая пицца',81],
+        ['ОЛИВЬЕ большая', 'Большая пицца',112],
+        ['ОТ ШЕФА большая', 'Большая пицца',261],
+        ['Пепперони большая', 'Большая пицца',193],
+        ['Хорватский Омлет большая', 'Большая пицца',120],
+        ['4 СЫРА половина', 'Половина пиццы', 53],
+        ['LIKE половина', 'Половина пиццы', 92],
+        ['TONNO половина', 'Половина пиццы', 37],
+        ['МАРГАРИТА половина', 'Половина пиццы', 32],
+        ['ОЛИВЬЕ половина', 'Половина пиццы', 161],
+        ['ОТ ШЕФА половина', 'Половина пиццы', 233],
+        ['ПЕППЕРОНИ половина', 'Половина пиццы', 178],
+        ['Хорватский Омлет половина', 'Половина пиццы', 186],
+        ['4 СЫРА четверть', 'Четверть пиццы', 44],
+        ['LIKE четверть', 'Четверть пиццы', 68],
+        ['TONNO четверть', 'Четверть пиццы', 27],
+        ['Маргарита четверть', 'Четверть пиццы', 34],
+        ['ОЛИВЬЕ четверть', 'Четверть пиццы', 109],
+        ['От Шефа четверть', 'Четверть пиццы', 131],
+        ['Пепперони четверть', 'Четверть пиццы', 113],
+        ['Хорватский Омлет четверть', 'Четверть пиццы', 97],
+        ['Кусок Хорватский Омлет', 'Кусок пиццы',202],
+        ['кусок 4 сыра', 'Кусок пиццы',86],
+        ['кусок Like', 'Кусок пиццы',123],
+        ['кусок Tonno', 'Кусок пиццы',33],
+        ['кусок Маргарита', 'Кусок пиццы',299],
+        ['кусок Оливье', 'Кусок пиццы',236],
+        ['кусок Пепперони', 'Кусок пиццы',292],
+        ['кусок от Шефа', 'Кусок пиццы',477]
+        ]);
+
+        tree = new google.visualization.TreeMap(document.getElementById('GMapsID'));
+        options = {
+          minColor: '#f00',
+          midColor: '#ddd',
+          maxColor: '#0d0',
+          headerHeight: 15,
+          fontColor: 'black',
+          showScale: true,
+          highlightOnMouseOver:true,
+
+          generateTooltip: showFullTooltip
+        };
+        function showFullTooltip(row, size, value) {
+          return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                 '<span style="font-family:Courier"><b>' + data.getValue(row, 0) +
+                 '</b>, продано: ' + data.getValue(row, 2) + '<br></div>';
+        }
+        tree.draw(data, options);
+
+      }
+    </script>
+  </head>
+<body>
+    <div class="hero-unit">
+        <div class="container">
+            <p>Like Pizza Cut <a href="http://magnitogorsk.likepizzacut.com" target="blank">Магнитогорск</a> <!--<br>Показано <span id="cnt"></span> доставок--></p>
+            <div id="GMapsID"></div>
+        </div>
+    </div>
+</body>
+</html>
