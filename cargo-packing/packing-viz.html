@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - orbit controls</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				color: #000;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				font-weight: bold;
+
+				background-color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				color:#000;
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+
+			}
+
+			a {
+				color: red;
+			}
+		</style> 
+	</head>
+
+	<body>
+		<div id="container"></div>
+		<div id="info">
+			<a href="http://threejs.org" target="_blank">three.js</a> - orbit controls example
+		</div>
+
+		<script src="js/three.min.js"></script>
+
+		<script src="js/OrbitControls.js"></script>
+
+		<script src="js/Detector.js"></script>
+		<script src="js/stats.min.js"></script>
+
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var stats;
+
+			var camera, controls, scene, renderer;
+
+			init();
+			animate();
+
+			function init() {
+
+				scene = new THREE.Scene();
+				//scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setClearColor( '0xcccccc' );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				var container = document.getElementById( 'container' );
+				container.appendChild( renderer.domElement );
+
+				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera.position.z = 500;
+
+				controls = new THREE.OrbitControls( camera, renderer.domElement );
+				//controls.addEventListener( 'change', render ); // add this only if there is no animation loop (requestAnimationFrame)
+				controls.enableDamping = true;
+				controls.dampingFactor = 0.25;
+				controls.enableZoom = false;
+
+				// world
+
+				//ось X
+				var material = new THREE.LineBasicMaterial({
+					color: 'blue'
+				});
+				var geometry = new THREE.Geometry();
+				geometry.vertices.push(
+					//vector3(x, y, z)
+					new THREE.Vector3( -500, 0, 0 ),
+					new THREE.Vector3( 500, 0, 0 )
+
+				);
+				lineX = new THREE.Line( geometry, material );
+				scene.add( lineX );
+				//ось Y
+				var material = new THREE.LineBasicMaterial({
+					color: 'green'
+				});
+				var geometry = new THREE.Geometry();
+				geometry.vertices.push(
+					new THREE.Vector3( 0, -500, 0 ),
+					new THREE.Vector3( 0, 500, 0 )				);
+				lineY = new THREE.Line( geometry, material );
+				scene.add( lineY );
+				//ось Z
+				var material = new THREE.LineBasicMaterial({
+					color: 'red'
+				});
+				var geometry = new THREE.Geometry();
+				geometry.vertices.push(
+					//vector3(x, y, z)
+					new THREE.Vector3( 0, 0, -500),
+					new THREE.Vector3( 0, 0, 500 )
+				);
+				lineZ = new THREE.Line( geometry, material );
+				scene.add( lineZ );
+				
+				//сам грузовой контейнер
+				var containerHeight = 200;
+				var containerLenght = 500;
+				var containerWidth = 200;
+				var geometry = new THREE.BoxGeometry( containerLenght, containerHeight, containerWidth);
+				var material = new THREE.MeshBasicMaterial( { transparent : true, opacity : 0.2, color : 'gray' } );
+				containerMain = new THREE.Mesh( geometry, material );
+				containerMain.position.y = containerHeight/2;
+				scene.add( containerMain );
+				//коробки
+
+				var box3L = 40;
+				var box3H = 50;
+				var box3W = 100;
+				var geometry = new THREE.BoxGeometry( box3L, box3H, box3W );
+				var material = new THREE.MeshBasicMaterial( { color: 'green' } );
+				box3 = new THREE.Mesh( geometry, material );
+				box3.position.y = box3H/2;
+				box3.position.x = containerLenght/2-box3L/2;
+				box3.position.z = containerWidth/2-box3W/2;
+				scene.add( box3 );
+
+				var box2L = 60;
+				var box2H = 80;
+				var box2W = 80;
+				var geometry = new THREE.BoxGeometry( box2L, box2H, box2W );
+				var material = new THREE.MeshBasicMaterial( { color: 'blue' } );
+				box2 = new THREE.Mesh( geometry, material );
+				box2.position.y = box2H/2;
+				box2.position.x = containerLenght/2 - box3L - box2L/2;
+				box2.position.z = containerWidth/2 - box2W/2;
+				scene.add( box2 );
+				
+				var box1L = 200;
+				var box1H = 200;
+				var box1W = 100;
+				var geometry = new THREE.BoxGeometry( box1L, box1H, box1W );
+				var material = new THREE.MeshBasicMaterial( { color: 'red' } );
+				box1 = new THREE.Mesh( geometry, material );
+				box1.position.y = box1H/2;
+				box1.position.x = containerLenght/2 - box1L/2;
+				box1.position.z = -(containerWidth/2 - box1W/2);
+				scene.add( box1 );
+
+
+
+
+
+				// lights
+
+				light = new THREE.DirectionalLight( 0xffffff );
+				light.position.set( 1, 1, 1 );
+				scene.add( light );
+
+				light = new THREE.DirectionalLight( 0x002288 );
+				light.position.set( -1, -1, -1 );
+				scene.add( light );
+
+				light = new THREE.AmbientLight( 0x222222 );
+				scene.add( light );
+
+				//
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				stats.domElement.style.zIndex = 100;
+				container.appendChild( stats.domElement );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				controls.update(); // required if controls.enableDamping = true, or if controls.autoRotate = true
+
+				stats.update();
+
+				render();
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+
+	</body>
+</html>
