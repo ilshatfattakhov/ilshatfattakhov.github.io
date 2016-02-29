@@ -44,7 +44,8 @@
 
 		<script src="js/Detector.js"></script>
 		<script src="js/stats.min.js"></script>
-
+<!-- 		<script src="js/dat.gui.min.js"></script>
+		<script src="js/material.js"></script> -->
 		<script>
 
 			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -58,11 +59,12 @@
 
 			function init() {
 
+
 				scene = new THREE.Scene();
 				//scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
 
 				renderer = new THREE.WebGLRenderer();
-				renderer.setClearColor( '0xcccccc' );
+				renderer.setClearColor( '0xFFFFFF' );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -117,51 +119,59 @@
 				scene.add( lineZ );
 				
 				//сам грузовой контейнер
-				var containerHeight = 200;
-				var containerLenght = 500;
-				var containerWidth = 200;
-				var geometry = new THREE.BoxGeometry( containerLenght, containerHeight, containerWidth);
-				var material = new THREE.MeshBasicMaterial( { transparent : true, opacity : 0.2, color : 'gray' } );
+				var containerHeight = 104*2;
+				var containerLenght = 96*2;
+				var containerWidth = 84*2;
+				var geometry = new THREE.BoxGeometry( containerLenght, containerHeight, containerWidth, 0, 0, 0);
+				var material = new THREE.MeshBasicMaterial( {wireframe : true, wireframeLinewidth:3, transparent : true, opacity : 0.2, color : 'gray' } );
 				containerMain = new THREE.Mesh( geometry, material );
+				containerMain.position.x = containerLenght/2;
 				containerMain.position.y = containerHeight/2;
-				scene.add( containerMain );
-				//коробки
-
-				var box3L = 40;
-				var box3H = 50;
-				var box3W = 100;
-				var geometry = new THREE.BoxGeometry( box3L, box3H, box3W );
-				var material = new THREE.MeshBasicMaterial( { color: 'green' } );
-				box3 = new THREE.Mesh( geometry, material );
-				box3.position.y = box3H/2;
-				box3.position.x = containerLenght/2-box3L/2;
-				box3.position.z = containerWidth/2-box3W/2;
-				scene.add( box3 );
-
-				var box2L = 60;
-				var box2H = 80;
-				var box2W = 80;
-				var geometry = new THREE.BoxGeometry( box2L, box2H, box2W );
-				var material = new THREE.MeshBasicMaterial( { color: 'blue' } );
-				box2 = new THREE.Mesh( geometry, material );
-				box2.position.y = box2H/2;
-				box2.position.x = containerLenght/2 - box3L - box2L/2;
-				box2.position.z = containerWidth/2 - box2W/2;
-				scene.add( box2 );
+				containerMain.position.z = containerWidth/2;
 				
-				var box1L = 200;
-				var box1H = 200;
-				var box1W = 100;
-				var geometry = new THREE.BoxGeometry( box1L, box1H, box1W );
-				var material = new THREE.MeshBasicMaterial( { color: 'red' } );
-				box1 = new THREE.Mesh( geometry, material );
-				box1.position.y = box1H/2;
-				box1.position.x = containerLenght/2 - box1L/2;
-				box1.position.z = -(containerWidth/2 - box1W/2);
-				scene.add( box1 );
+				scene.add( containerMain );
 
 
+				//добавляем массово коробки
+				//массив с коробками
+				boxes = [
+					[0, 0, 0, 60, 20, 10],
+					[60, 0, 0, 20, 20, 20],
+					[80, 0, 0, 20, 20, 20],
+					[0, 0, 10, 60, 20, 10],
+					[0, 0, 20, 60, 20, 10],
+					[60, 0, 20, 20, 20, 20],
+					[80, 0, 20, 20, 20, 20],
+					[0, 0, 30, 60, 20, 10],
+					[0, 0, 40, 60, 20, 10],
+					[60, 0, 40, 20, 20, 20],
+					[80, 0, 40, 20, 20, 20],
+					[40, 0, 50, 20, 20, 20],
+					[20, 0, 50, 20, 20, 20],
+					[0, 0, 50, 20, 20, 20],
+					[60, 0, 60, 20, 20, 20],
+					[80, 0, 60, 20, 20, 20],
+					[0, 20, 0, 20, 20, 20],
+					[20, 20, 0, 20, 20, 20],
+					[40, 20, 0, 20, 20, 20],
+					[60, 20, 0, 20, 20, 20],
+					[80, 20, 0, 20, 20, 20],
+					[0, 20, 20, 20, 20, 20],
+					[20, 20, 20, 20, 20, 20],
+					[40, 20, 20, 20, 20, 20],
+					[60, 20, 20, 20, 20, 20],
+					[80, 20, 20, 20, 20, 20],
+					[0, 20, 40, 20, 20, 20],
+					[0, 20, 60, 104, 40, 24]
+					];
 
+				var m = 2; //увеличиваем масштаб в m раз	
+				
+				//и сами коробки
+				for (var b = 0; b < boxes.length; b +=1 ) {
+					console.log(boxes[b]);
+					addBox(boxes[b][0]*m,boxes[b][1]*m,boxes[b][2]*m,boxes[b][3]*m,boxes[b][4]*m,boxes[b][5]*m);
+				}	
 
 
 				// lights
@@ -216,6 +226,16 @@
 
 				renderer.render( scene, camera );
 
+			}
+			function addBox(cX, cY, cZ, L, H, W){
+				var geometry = new THREE.BoxGeometry( L, H, W );
+				var color = new THREE.Color( Math.random(), Math.random(), Math.random() )
+				var material = new THREE.MeshBasicMaterial( { color: color} );
+				box = new THREE.Mesh( geometry, material );
+				box.position.x = L/2 + cX;
+				box.position.y = H/2 + cY;
+				box.position.z = W/2 + cZ;
+				scene.add( box );
 			}
 
 		</script>
